@@ -49,7 +49,7 @@ const InputForm: React.FC<InputFormProps> = ({ onSubmit, isLoading }) => {
                     />
                 </div>
                  <div>
-                    <label htmlFor="age" className={labelClasses}>Age</label>
+                    <label htmlFor="age" className={labelClasses}>Age (Required)</label>
                     <input
                         type="number"
                         id="age"
@@ -59,6 +59,7 @@ const InputForm: React.FC<InputFormProps> = ({ onSubmit, isLoading }) => {
                         className={inputClasses}
                         placeholder="e.g., 28"
                         min="1"
+                        required
                     />
                 </div>
                  <div>
