@@ -1,13 +1,13 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import type { UserInput, BookRecommendation } from '../types';
 
-const API_KEY = import.meta.env.VITE_API_KEY;
+const VITE_API_KEY = import.meta.env.VITE_API_KEY;
 
-if (!API_KEY) {
+if (!VITE_API_KEY) {
     throw new Error("VITE_API_KEY environment variable not set. Please add it to your deployment settings.");
 }
 
-const ai = new GoogleGenAI({ apiKey: API_KEY });
+const ai = new GoogleGenAI({ apiKey: VITE_API_KEY });
 
 const recommendationSchema = {
     type: Type.ARRAY,
@@ -65,6 +65,13 @@ const buildPrompt = (userInput: UserInput): string => {
 
 export const getBookRecommendations = async (userInput: UserInput): Promise<BookRecommendation[]> => {
     try {
+        let systemInstruction = "You are a world-class librarian and literary expert with a passion for connecting people to their next favorite book. You cater to all age groups and provide insightful, personalized recommendations in the requested JSON format. Your goal is to give recommendations so compelling that the user is highly likely to purchase the books through the provided links.";
+
+        const userAge = parseInt(userInput.age, 10);
+        if (!isNaN(userAge) && userAge < 18) {
+            systemInstruction += " CRITICAL SAFETY RULE: The user is a minor. All book recommendations MUST be strictly appropriate for someone under the age of 18. Do NOT recommend books with adult themes, explicit content, excessive violence, or mature subject matter. Prioritize Young Adult (YA) or middle-grade books where appropriate. This is a non-negotiable safety requirement.";
+        }
+
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
             contents: buildPrompt(userInput),
@@ -72,7 +79,7 @@ export const getBookRecommendations = async (userInput: UserInput): Promise<Book
                 responseMimeType: "application/json",
                 responseSchema: recommendationSchema,
                 temperature: 0.8,
-                systemInstruction: "You are a world-class librarian and literary expert with a passion for connecting people to their next favorite book. You cater to all age groups and provide insightful, personalized recommendations in the requested JSON format. Your goal is to give recommendations so compelling that the user is highly likely to purchase the books through the provided links."
+                systemInstruction: systemInstruction
             },
         });
 
