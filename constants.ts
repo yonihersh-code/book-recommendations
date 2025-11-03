@@ -17,4 +17,4 @@ export const GENDER_OPTIONS: string[] = [
  * TODO: Replace this with your actual Amazon Associate tag.
  * You can sign up for the Amazon Associates program to get one.
  */
-export const AMAZON_ASSOCIATE_TAG = 'your-amazon-tag-20';
+export const AMAZON_ASSOCIATE_TAG = 'tbr04-22';
