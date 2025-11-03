@@ -76,11 +76,15 @@ export const getBookRecommendations = async (userInput: UserInput): Promise<Book
             },
         });
 
-        const jsonText = response.text.trim();
-        const recommendations = JSON.parse(jsonText) as BookRecommendation[];
+        const jsonText = response.text;
+        if (!jsonText) {
+            throw new Error("Received an empty response from the API.");
+        }
+
+        const recommendations = JSON.parse(jsonText.trim()) as BookRecommendation[];
 
         if (!Array.isArray(recommendations) || recommendations.length === 0) {
-            throw new Error("Received an empty or invalid response from the API.");
+            throw new Error("Received an empty or invalid array from the API.");
         }
         
         // Gemini can sometimes return more or less than 5, so we slice.
